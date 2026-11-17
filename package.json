@@ -1,0 +1,14 @@
+{
+  "name": "solidity-assessment-hardhat-starter",
+  "version": "1.0.0",
+  "description": "Starter project for the Solidity Developer Assessment (Part D)",
+  "scripts": {
+    "test": "hardhat test",
+    "compile": "hardhat compile",
+    "deploy:sepolia": "hardhat run deploy.js --network sepolia"
+  },
+  "devDependencies": {
+    "@nomicfoundation/hardhat-toolbox": "^5.0.0",
+    "hardhat": "^2.22.0"
+  }
+}
