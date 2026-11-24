@@ -8,12 +8,16 @@ pragma solidity ^0.8.24;
 ///      additional requirement supplied during the live assessment.
 contract SimpleVault {
     address public owner;
+    uint256 public minDeposit;
+    uint256 public maxDeposit;
 
     mapping(address => uint256) private _balances;
 
     event Deposited(address indexed account, uint256 amount);
     event Withdrawn(address indexed account, uint256 amount);
     event Swept(address indexed to, uint256 amount);
+    event MinDepositUpdated(uint256 newMinDeposit);
+    event MaxDepositUpdated(uint256 newMaxDeposit);
 
     modifier onlyOwner() {
         require(msg.sender == owner, "SimpleVault: caller is not the owner");
@@ -24,9 +28,29 @@ contract SimpleVault {
         owner = msg.sender;
     }
 
+    function setMinDeposit(uint256 _minDeposit) external onlyOwner {
+        if (maxDeposit > 0) {
+            require(_minDeposit <= maxDeposit, "SimpleVault: min exceeds max");
+        }
+        minDeposit = _minDeposit;
+        emit MinDepositUpdated(_minDeposit);
+    }
+
+    function setMaxDeposit(uint256 _maxDeposit) external onlyOwner {
+        if (_maxDeposit > 0) {
+            require(_maxDeposit >= minDeposit, "SimpleVault: max below min");
+        }
+        maxDeposit = _maxDeposit;
+        emit MaxDepositUpdated(_maxDeposit);
+    }
+
     /// @notice Deposit ETH into the vault, credited to the caller.
     function deposit() external payable {
         require(msg.value > 0, "SimpleVault: deposit must be > 0");
+        require(msg.value >= minDeposit, "SimpleVault: below minDeposit");
+        if (maxDeposit > 0) {
+            require(msg.value <= maxDeposit, "SimpleVault: above maxDeposit");
+        }
         _balances[msg.sender] += msg.value;
         emit Deposited(msg.sender, msg.value);
     }

@@ -1,8 +1,7 @@
 require("@nomicfoundation/hardhat-toolbox");
 
-
-const SEPOLIA_RPC_URL = "https://etheureum-sepolia-rpc.allthatnode.com";
-const PRIVATE_KEY = "";
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL || "https://sepolia.gateway.tenderly.co";
+const PRIVATE_KEY = process.env.PRIVATE_KEY || "";
 
 module.exports = {
   solidity: {
